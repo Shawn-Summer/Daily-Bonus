@@ -1,20 +1,16 @@
-name: Daily Bonus
+name: Check in workflow
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Test scenario tags'
-  push:
-    branches:
-      - master
   schedule:
-    - cron: '0 2 * * *'
-
+    - cron: '0 2 * * *' # runs on 2:00 UTC everyday
+    
+  workflow_dispatch: # support customized trigger
+    inputs:
+      tags:
+        description: 'just for a test'
+        required: true
+        default: 'test'
+        type: string
 jobs:
   # check in job
   checkin:
@@ -60,22 +56,6 @@ jobs:
       - name: Check-in
         run: python ./message.py
         
-  # # add keepalive job
-  keepalive-job:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write  # 允许推送代码
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
-      - name: Update keepalive timestamp
-        run: |
-          date > .keepalive   # 把当前时间写到一个文件里
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .keepalive
-          git commit -m "chore: keepalive commit $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
-          git push
 
 
