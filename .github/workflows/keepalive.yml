@@ -1,0 +1,31 @@
+name: Keepalive Workflow
+
+on:
+  schedule:
+    - cron: "0 0 1 * *" # 每天 00:00 UTC (北京时间 08:00) 触发
+
+  workflow_dispatch: # 手动触发
+    inputs:
+      tags:
+        description: 'Just for a test!'
+        required: true
+        default: 'test'
+        type: string
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 允许推送代码
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update keepalive timestamp
+        run: |
+          date > .keepalive   # 把当前时间写到一个文件里
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .keepalive
+          git commit -m "chore: keepalive commit $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
+          git push
