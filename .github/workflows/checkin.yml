@@ -16,6 +16,7 @@ on:
     - cron: '0 2 * * *'
 
 jobs:
+  # check in job
   checkin:
     strategy:
       matrix:
@@ -58,3 +59,14 @@ jobs:
 
       - name: Check-in
         run: python ./message.py
+        
+  # add keepalive job
+  keepalive-job:
+    name: Keepalive Workflow
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gautamkrishnar/keepalive-workflow@v2
+
