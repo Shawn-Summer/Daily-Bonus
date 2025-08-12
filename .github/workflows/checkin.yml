@@ -60,13 +60,22 @@ jobs:
       - name: Check-in
         run: python ./message.py
         
-  # add keepalive job
+  # # add keepalive job
   keepalive-job:
-    name: Keepalive Workflow
     runs-on: ubuntu-latest
     permissions:
-      actions: write
+      contents: write  # 允许推送代码
     steps:
-      - uses: actions/checkout@v4
-      - uses: gautamkrishnar/keepalive-workflow@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update keepalive timestamp
+        run: |
+          date > .keepalive   # 把当前时间写到一个文件里
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .keepalive
+          git commit -m "chore: keepalive commit $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
+          git push
+
 
