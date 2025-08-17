@@ -39,14 +39,18 @@ jobs:
         run: |
           LATEST_TIME=$(git log -1 --format=%cI)
           echo $LATEST_TIME
+          echo ${{ github.event.head_commit.timestamp }}
       - name: send2telegram
         uses: metalpoch/telegram-alerts-action@v1
         with:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
           text: |
-            <b>${{ github.ref_name }} - ${{ github.sha }}</b>
-            提交时间：${{ github.event.head_commit.timestamp }}
+            👇新的提交👇
+            👤提交人: ${{ github.actor }}
+            📄提交信息: ${{ github.event.commits[0].message }}
+            📦仓库: ${{ github.repository }}
+            🔗 查看提交: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
           parse-mode: HTML
           disable-notification: true
           disable-web-page-preview: true
