@@ -91,8 +91,7 @@ jobs:
             🎉 **是否成功提交** ：_${{ env.VERIFY_SUCCESS }}_
             👤 **作者**：_${{ env.LAST_COMMITTER }}_
             📅 **提交时间**：_${{ env.RECENT_TIME }}  ${{ env.LATEST_TIME }}_
-            ✉️ **提交信息：**
-              ${{ env.LAST_MESSAGE }}
+            ✉️ **提交信息：** _${{ env.LAST_MESSAGE }}_
             🔗 [查看提交](https://github.com/${{ github.repository }}/commit/${{ env.SHA }})
 
           parse-mode: MarkdownV2
