@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+          
       - name: Update keepalive timestamp
         run: | #将文件 .keepalive 修改为现在时间push上去
           date > .keepalive   
@@ -36,6 +36,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: refs/heads/${{ github.ref_name }}   # 强制拉取分支最新状态
       - name: verify
         run: |
           RECENT_TIME=$(git log -1 --format=%cr)
@@ -62,9 +64,7 @@ jobs:
               echo "keepalive fail!"
           fi
           
-          echo "Author: ${{ github.event.commits[0].author.name }}"
-          echo "Message: ${{ github.event.commits[0].message }}"
-          echo "Time:   ${{ github.event.commits[0].timestamp }}"
+          echo "Author: ${{ github.event}}"
 
       - name: send2telegram
         uses: metalpoch/telegram-alerts-action@v1
