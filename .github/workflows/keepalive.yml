@@ -39,14 +39,22 @@ jobs:
         run: |
           LATEST_TIME=$(git log -1 --format=%cI)
           echo $LATEST_TIME
-      - name: send to telegram bot
-        run: |
-          python - <<EOF
-import os
-from datetime import datetime
-# 从环境变量读取 git log 输出
-latest_time = os.environ['LATEST_TIME']
-dt = datetime.fromisoformat(latest_time)
-print("格式化时间:", dt.strftime("%Y年%m月%d日 %H:%M:%S"))
-EOF
+      - name: send2telegram
+        uses: colutius/Telegram-Msg@main
+        with:
+          token: ${{ secrets.TG_BOT_TOKEN }}
+          chatid: ${{ secrets.TG_USER_ID }}
+          message: |
+            👇新的提交👇
+            
+            👤提交人: [${{ github.actor }}]
   
+            📄提交信息: ${{ github.event.commits[0].message }}
+  
+            📦仓库: ${{ github.repository }}
+          button: true
+          button_name: 👀查看更改👀
+          button_url: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+          is_notify: true
+          is_preview: true
+
