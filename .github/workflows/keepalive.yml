@@ -41,7 +41,7 @@ jobs:
           echo "RECENT_TIME=$RECENT_TIME" >> $GITHUB_ENV
 
           # 获取最新提交时间
-          LATEST_TIME=$(git log -1 --format=%cI)
+          LATEST_TIME=$(TZ=UTC git log -1 --format=%cI)
           echo "LATEST_TIME=$LATEST_TIME"
           
           # 提取 LATEST_TIME 的日期部分
