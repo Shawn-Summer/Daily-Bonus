@@ -17,14 +17,19 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # 允许push
+    outputs:
+      SHA_1: steps.step2.SHA_1
     steps:
+      
       - name: Checkout repository
+        id: step1
         uses: actions/checkout@v4
-          
       - name: Update keepalive timestamp
+        id: step2
         run: | #将文件 .keepalive 修改为现在时间push上去
           SHA_1=$(git log -1 --format="%H")
-          echo "SHA_1=$SHA_1" >> $GITHUB_ENV
+          echo "SHA_1=$SHA_1" >> $GITHUB_OUTPUT
+          
           date > .keepalive   
           git config user.name "keepalive[bot]"
           git config user.email "keepalive@keepalive.bot.com"
@@ -41,8 +46,10 @@ jobs:
         with:
           ref: refs/heads/${{ github.ref_name }}   # 强制拉取分支最新状态 即keepalive 中的提交
       - name: verify
+        env:
+          SHA_1: ${{needs.keepalive.outputs.SHA_1}}
+          
         run: |
-
           LAST_COMMITTER=$(git log -1 --format="%cn")
           echo "LAST_COMMITTER=$LAST_COMMITTER" >> $GITHUB_ENV
 
@@ -55,7 +62,6 @@ jobs:
           LAST_MESSAGE=$(git log -1 --format="%s")
           echo "LAST_MESSAGE=$LAST_MESSAGE" >> $GITHUB_ENV
 
-          SHA_1=${{ env.SHA_1 }}
           SHA_2=$(git log -1 --format="%H")
           
           echo "SHA_1=$SHA_1"   
@@ -70,7 +76,6 @@ jobs:
           fi
           
           
-
       - name: send2telegram
         uses: metalpoch/telegram-alerts-action@v1
         with:
