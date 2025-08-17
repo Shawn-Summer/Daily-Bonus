@@ -87,7 +87,7 @@ jobs:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
           text: |
-            ><b>[🤖 Keepalive Bot]</b>
+            <b>[🤖 Keepalive Bot]</b>
             🎉 <b>是否成功提交：</b> <i>${{ env.VERIFY_SUCCESS }}</i>
             👤 <b>作者：</b> <i>${{ env.LAST_COMMITTER }}</i>
             📅 <b>提交时间：</b> <i>${{ env.RECENT_TIME }} / ${{ env.LATEST_TIME }}</i>
