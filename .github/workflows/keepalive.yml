@@ -18,7 +18,7 @@ jobs:
     permissions:
       contents: write  # 允许push
     outputs:
-      SHA_1: steps.step2.SHA_1
+      SHA_1: $
     steps:
       - name: Checkout repository
         id: step1
@@ -47,7 +47,7 @@ jobs:
           ref: refs/heads/${{ github.ref_name }}   # 强制拉取分支最新状态 即keepalive 中的提交
       - name: verify
         env:
-          SHA_1: ${{needs.keepalive.outputs.SHA_1}}
+          SHA_1: $
           
         run: |
           LAST_COMMITTER=$(git log -1 --format="%cn")
