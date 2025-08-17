@@ -86,7 +86,7 @@ jobs:
       - name: send2telegram
         uses: metalpoch/telegram-alerts-action@v1
         env:
-          VERIFY_SUCCESS: ${{ needs. check_push.outputs.output1}}
+          VERIFY_SUCCESS: ${{ needs.check_push.outputs.output1}}
         with:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
