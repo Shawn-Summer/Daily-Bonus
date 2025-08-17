@@ -35,7 +35,7 @@ jobs:
     needs: keepalive
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 #默认会检出触发 workflow 的那个 commit 而不是 keepalive push的仓库
         with:
           ref: refs/heads/${{ github.ref_name }}   # 强制拉取分支最新状态
       - name: verify
@@ -64,7 +64,10 @@ jobs:
               echo "keepalive fail!"
           fi
           
-          echo "Author: ${{ github.event}}"
+          COMMIT_INFO=$(git log -1 --format="Author: %an <%ae>%nDate: %ad%nMessage: %s")
+          echo "COMMIT_INFO<<EOF" >> $GITHUB_ENV
+          echo "$COMMIT_INFO" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: send2telegram
         uses: metalpoch/telegram-alerts-action@v1
@@ -72,13 +75,9 @@ jobs:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
           text: |
-          
             🎉是否成功提交：${{ env.VERIFY_SUCCESS }}
-            # 👤提交人: ${{ github.actor }}
-            # 📄提交信息: ${{ github.event.commits[0].message }}
             📅提交时间：${{ env.RECENT_TIME }}
-            📦仓库: ${{ github.repository }}
-            🔗 查看提交: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            ${{ env.COMMIT_INFO }}
           parse-mode: HTML
           disable-notification: true
           disable-web-page-preview: true
