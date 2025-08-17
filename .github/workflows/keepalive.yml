@@ -54,10 +54,10 @@ jobs:
 
           # 判断是否为今天
           if [ "$LATEST_DATE" = "$TODAY" ]; then
-              echo "SUCCESS=YES" >> $GITHUB_ENV
+              echo "VERIFY_SUCCESS=YES" >> $GITHUB_ENV
               echo "keepalive success!"
           else
-              echo "SUCCESS=NO" >> $GITHUB_ENV
+              echo "VERIFY_SUCCESS=NO" >> $GITHUB_ENV
               echo "keepalive fail!"
           fi
 
@@ -68,7 +68,7 @@ jobs:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
           text: |
-            ⌚今日是否提交：${{ env.LATEST_TIME }}
+            ⌚今日是否提交：${{ env.VERIFY_SUCCESS }}
             👤提交人: ${{ github.actor }}
             📄提交信息: ${{ github.event.commits[0].message }}
             📅提交时间：${{ env.RECENT_TIME }}
