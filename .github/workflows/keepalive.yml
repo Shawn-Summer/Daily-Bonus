@@ -20,7 +20,6 @@ jobs:
     outputs:
       SHA_1: steps.step2.SHA_1
     steps:
-      
       - name: Checkout repository
         id: step1
         uses: actions/checkout@v4
@@ -28,14 +27,14 @@ jobs:
         id: step2
         run: | #将文件 .keepalive 修改为现在时间push上去
           SHA_1=$(git log -1 --format="%H")
-          echo "SHA_1=$SHA_1" >> $GITHUB_OUTPUT
-          
           date > .keepalive   
           git config user.name "keepalive[bot]"
           git config user.email "keepalive@keepalive.bot.com"
           git add .keepalive
-          git commit -m "chore: keepalive commit \n $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
+          git commit -m "chore: keepalive commit" -m "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
           git push
+
+          echo "SHA_1=$SHA_1" >> "$GITHUB_OUTPUT"
           
   verify:
     runs-on: ubuntu-latest
