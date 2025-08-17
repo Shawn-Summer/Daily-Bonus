@@ -48,7 +48,8 @@ jobs:
           text: |
             👇新的提交👇
             👤提交人: ${{ github.actor }}
-            📄提交信息: ${{ github.event.commits[0].message }}
+            📄提交信息: ${{ github.event.commits[0] }}
+            提交时间：${{LATEST_TIME}}
             📦仓库: ${{ github.repository }}
             🔗 查看提交: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
           parse-mode: HTML
