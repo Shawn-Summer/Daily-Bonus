@@ -40,21 +40,14 @@ jobs:
           LATEST_TIME=$(git log -1 --format=%cI)
           echo $LATEST_TIME
       - name: send2telegram
-        uses: colutius/Telegram-Msg@main
+        uses: metalpoch/telegram-alerts-action@v1
         with:
-          token: ${{ secrets.TG_BOT_TOKEN }}
-          chatid: ${{ secrets.TG_USER_ID }}
-          message: |
-            👇新的提交👇
-            
-            👤提交人: [${{ github.actor }}]
-  
-            📄提交信息: ${{ github.event.commits[0].message }}
-  
-            📦仓库: ${{ github.repository }}
-          button: true
-          button_name: 👀查看更改👀
-          button_url: https://github.com/${{ github.repository }}/commit/${{github.sha}}
-          is_notify: true
-          is_preview: true
-
+          bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
+          chat-id: ${{ secrets.TG_USER_ID }}
+          text: "<b>${{ github.ref_name }} - ${{ github.sha }}</b>"
+          parse-mode: HTML
+          disable-notification: true
+          disable-web-page-preview: true
+          
+# token: ${{ secrets.TG_BOT_TOKEN }}
+# chatid: ${{ secrets.TG_USER_ID }}
