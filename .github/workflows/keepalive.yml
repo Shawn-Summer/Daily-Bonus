@@ -82,6 +82,7 @@ jobs:
           echo "LATEST_TIME=$LATEST_TIME" >> $GITHUB_ENV
           LAST_MESSAGE=$(git log -1 --format="%s")
           echo "LAST_MESSAGE=$LAST_MESSAGE" >> $GITHUB_ENV
+          echo "SHA=$(git log -1 --format="%H")" >> $GITHUB_ENV
 
       - name: send2telegram
         uses: metalpoch/telegram-alerts-action@v1
@@ -96,7 +97,7 @@ jobs:
             📅提交时间：${{ env.RECENT_TIME }}
                       ${{ env.LATEST_TIME }} 
             ✉️提交信息：${{ env.LAST_MESSAGE }}
-            🔗查看提交：https://github.com/${{ github.repository }}/commit/${{ env.SHA_2 }}
+            🔗查看提交：https://github.com/${{ github.repository }}/commit/${{ env.SHA }}
             
           parse-mode: HTML
           disable-notification: true
