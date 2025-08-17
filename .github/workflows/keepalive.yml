@@ -44,7 +44,9 @@ jobs:
         with:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
-          text: "<b>${{ github.ref_name }} - ${{ github.sha }}</b>"
+          text: |
+            <b>${{ github.ref_name }} - ${{ github.sha }}</b>
+            提交时间：${{ github.event.head_commit.timestamp }}
           parse-mode: HTML
           disable-notification: true
           disable-web-page-preview: true
