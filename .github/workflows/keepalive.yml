@@ -91,7 +91,7 @@ jobs:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
           text: |
-            🎉是否成功提交：${{ VERIFY_SUCCESS }}
+            🎉是否成功提交：${{ env.VERIFY_SUCCESS }}
             👤作者：${{ env.LAST_COMMITTER }}
             📅提交时间：${{ env.RECENT_TIME }}
                       ${{ env.LATEST_TIME }} 
