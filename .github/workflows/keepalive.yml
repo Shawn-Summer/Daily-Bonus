@@ -23,7 +23,7 @@ jobs:
           
       - name: Update keepalive timestamp
         run: | #将文件 .keepalive 修改为现在时间push上去
-          SHA_1=(git log -1 --format="%H")
+          SHA_1=$(git log -1 --format="%H")
           echo "SHA_1=$SHA_1" >> $GITHUB_ENV
           date > .keepalive   
           git config user.name "keepalive[bot]"
@@ -42,9 +42,7 @@ jobs:
           ref: refs/heads/${{ github.ref_name }}   # 强制拉取分支最新状态 即keepalive 中的提交
       - name: verify
         run: |
-
-          
-          SHA_2=(git log -1 --format="%H")
+          SHA_2=$(git log -1 --format="%H")
           echo "SHA_2=$SHA_2" >> $GITHUB_ENV
 
           LAST_COMMITTER=$(git log -1 --format="%cn")
