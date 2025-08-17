@@ -35,6 +35,7 @@ jobs:
           git push
 
           echo "SHA_1=$SHA_1" >> "$GITHUB_OUTPUT"
+          echo "SHA_1=$SHA_1"
           
   verify:
     runs-on: ubuntu-latest
