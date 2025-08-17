@@ -2,7 +2,7 @@ name: Keepalive Workflow
 
 on:
   schedule:
-    - cron: "0 0 1 * *" # 每天 00:00 UTC (北京时间 08:00) 触发
+    - cron: "0 10 1 * *" # 每月1号 10:00 UTC 
 
   workflow_dispatch: # 手动触发
     inputs:
@@ -37,19 +37,41 @@ jobs:
         uses: actions/checkout@v4
       - name: verify
         run: |
+          RECENT_TIME=$(git log -1 --format=%cr)
+          echo "RECENT_TIME=$RECENT_TIME" >> $GITHUB_ENV
+
+          # 获取最新提交时间
           LATEST_TIME=$(git log -1 --format=%cI)
-          echo $LATEST_TIME
-          echo ${{ github.event.head_commit.timestamp }}
+          echo "LATEST_TIME=$LATEST_TIME"
+          
+          # 提取 LATEST_TIME 的日期部分
+          LATEST_DATE=${LATEST_TIME:0:10}
+          echo "LATEST_DATE=$LATEST_DATE"
+          
+          # 获取今天日期（本地时间）
+          TODAY=$(date +%Y-%m-%d)
+          echo "TODAY=$TODAY"
+
+          # 判断是否为今天
+          if [ "$LATEST_DATE" = "$TODAY" ]; then
+              echo "SUCCESS=YES" >> $GITHUB_ENV
+              echo "keepalive success!"
+          else
+              echo "SUCCESS=NO" >> $GITHUB_ENV
+              echo "keepalive fail!"
+          fi
+
+
       - name: send2telegram
         uses: metalpoch/telegram-alerts-action@v1
         with:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
           text: |
-            👇新的提交👇
+            ⌚今日是否提交：${{ env.LATEST_TIME }}
             👤提交人: ${{ github.actor }}
-            📄提交信息: ${{ github.event.commits[0] }}
-            提交时间：${{ env.LATEST_TIME }}
+            📄提交信息: ${{ github.event.commits[0].message }}
+            📅提交时间：${{ env.RECENT_TIME }}
             📦仓库: ${{ github.repository }}
             🔗 查看提交: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
           parse-mode: HTML
