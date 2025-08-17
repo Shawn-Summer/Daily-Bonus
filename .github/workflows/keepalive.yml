@@ -87,12 +87,12 @@ jobs:
           bot-token-id: ${{ secrets.TG_BOT_TOKEN }}
           chat-id: ${{ secrets.TG_USER_ID }}
           text: |
-            🤖 Keepalive Bot
-            🎉 **是否成功提交** ：_${{ env.VERIFY_SUCCESS }}_
-            👤 **作者**：_${{ env.LAST_COMMITTER }}_
-            📅 **提交时间**：_${{ env.RECENT_TIME }}  ${{ env.LATEST_TIME }}_
-            ✉️ **提交信息：** _${{ env.LAST_MESSAGE }}_
-            🔗 [查看提交](https://github.com/${{ github.repository }}/commit/${{ env.SHA }})
+            *🤖 Keepalive Bot*
+            🎉 *是否成功提交*：_${{ env.VERIFY_SUCCESS }}_
+            👤 *作者*：_${{ env.LAST_COMMITTER }}_
+            📅 *提交时间*：_${{ env.RECENT_TIME }}  ${{ env.LATEST_TIME }}_
+            ✉️ *提交信息*：
+
 
           parse-mode: MarkdownV2
           disable-notification: true
