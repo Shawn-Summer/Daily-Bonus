@@ -29,7 +29,7 @@ jobs:
           git config user.name "keepalive[bot]"
           git config user.email "keepalive@keepalive.bot.com"
           git add .keepalive
-          git commit -m "chore: keepalive commit $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
+          git commit -m "chore: keepalive commit \n $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
           git push
           
   verify:
@@ -57,10 +57,10 @@ jobs:
           LAST_MESSAGE=$(git log -1 --format="%s")
           echo "LAST_MESSAGE=$LAST_MESSAGE" >> $GITHUB_ENV
 
-          echo $SHA_1
+          echo ${{ env.SHA_1 }}
           echo $SHA_2
           
-          if [ "$SHA_1" != "$SHA_2" ]; then           # 判断keepalive前后仓库是否一致
+          if [ "{{ env.SHA_1 }}" != "$SHA_2" ]; then           # 判断keepalive前后仓库是否一致
               echo "VERIFY_SUCCESS=YES" >> $GITHUB_ENV
               echo "keepalive success!"
           else
