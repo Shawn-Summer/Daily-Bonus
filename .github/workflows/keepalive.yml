@@ -29,3 +29,24 @@ jobs:
           git add .keepalive
           git commit -m "chore: keepalive commit $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
           git push
+          
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: verify
+        run: |
+          LATEST_TIME=$(git log -1 --format=%cI)
+          echo $LATEST_TIME
+      - name: send to telegram bot
+        run: |
+          python - <<EOF
+import os
+from datetime import datetime
+# 从环境变量读取 git log 输出
+latest_time = os.environ['LATEST_TIME']
+dt = datetime.fromisoformat(latest_time)
+print("格式化时间:", dt.strftime("%Y年%m月%d日 %H:%M:%S"))
+EOF
+  
