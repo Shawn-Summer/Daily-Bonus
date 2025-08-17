@@ -16,13 +16,15 @@ jobs:
   keepalive:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 允许推送代码
+      contents: write  # 允许push
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
           
       - name: Update keepalive timestamp
         run: | #将文件 .keepalive 修改为现在时间push上去
+          SHA_1=(git log -1 --format="%H")
+          echo "SHA_1=$SHA_1" >> $GITHUB_ENV
           date > .keepalive   
           git config user.name "keepalive[bot]"
           git config user.email "keepalive@keepalive.bot.com"
@@ -37,26 +39,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4 #默认会检出触发 workflow 的那个 commit 而不是 keepalive push的仓库
         with:
-          ref: refs/heads/${{ github.ref_name }}   # 强制拉取分支最新状态
+          ref: refs/heads/${{ github.ref_name }}   # 强制拉取分支最新状态 即keepalive 中的提交
       - name: verify
         run: |
+          git log
+          
+          SHA_2=(git log -1 --format="%H")
+          echo "SHA_2=$SHA_2" >> $GITHUB_ENV
+          
+          LAST_COMMITTER=$(git log -1 --format="%cn")
+          echo "LAST_COMMITTER=$LAST_COMMITTER" >> $GITHUB_ENV
+
           RECENT_TIME=$(git log -1 --format=%cr)
           echo "RECENT_TIME=$RECENT_TIME" >> $GITHUB_ENV
-
-          # 获取最新提交时间 （keepalive[bot]提交的时候默认是UTC时间）
+          
           LATEST_TIME=$(git log -1 --format=%cI)
-          echo "LATEST_TIME=$LATEST_TIME"
+          echo "LATEST_TIME=$LATEST_TIME" >> $GITHUB_ENV
           
-          # 提取 LATEST_TIME 的日期部分
-          LATEST_DATE=${LATEST_TIME:0:10}
-          echo "LATEST_DATE=$LATEST_DATE"
-          
-          # 获取今天日期（本地时间UTC）
-          TODAY=$(date +%Y-%m-%d)
-          echo "TODAY=$TODAY"
-
-          # 判断是否为今天
-          if [ "$LATEST_DATE" = "$TODAY" ]; then
+          LAST_MESSAGE=$(git log -1 --format="%s")
+          echo "LAST_MESSAGE=$LAST_MESSAGE" >> $GITHUB_ENV
+      
+          if [ "$SHA_1" = "$SHA_2" ]; then           # 判断keepalive前后仓库是否一致
               echo "VERIFY_SUCCESS=YES" >> $GITHUB_ENV
               echo "keepalive success!"
           else
@@ -64,10 +67,6 @@ jobs:
               echo "keepalive fail!"
           fi
           
-          COMMIT_INFO=$(git log -1 --format="Author: %an <%ae>%nDate: %ad%nMessage: %s")
-          echo "COMMIT_INFO<<EOF" >> $GITHUB_ENV
-          echo "$COMMIT_INFO" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
 
       - name: send2telegram
         uses: metalpoch/telegram-alerts-action@v1
@@ -76,8 +75,12 @@ jobs:
           chat-id: ${{ secrets.TG_USER_ID }}
           text: |
             🎉是否成功提交：${{ env.VERIFY_SUCCESS }}
+            👤作者：${{ env.LAST_COMMITTER }}
             📅提交时间：${{ env.RECENT_TIME }}
-            ${{ env.COMMIT_INFO }}
+                      ${{ env.LATEST_TIME }} 
+            ✉️提交信息：${{ env.LAST_MESSAGE }}
+            🔗查看提交：https://github.com/${{ github.repository }}/commit/${{ env.SHA_2 }}
+            
           parse-mode: HTML
           disable-notification: true
           disable-web-page-preview: true
