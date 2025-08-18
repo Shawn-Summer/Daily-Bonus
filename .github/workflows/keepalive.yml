@@ -88,11 +88,11 @@ jobs:
           chat-id: ${{ secrets.TG_USER_ID }}
           message: |
             ## 🤖 Keepalive Bot Notification 🔔
-            - 🎉 **是否成功提交**：${{ env.VERIFY_SUCCESS }}
-            - 👤 **作者**：${{ env.LAST_COMMITTER }}
-            - 📅 **提交时间**：${{ env.RECENT_TIME }}  ${{ env.LATEST_TIME }}
-            - ✉️ **提交信息**：_${{ env.LAST_MESSAGE }}_
-            - 🔗 **[查看提交](https://github.com/${{ github.repository }}/commit/${{ env.SHA }})**
+            🎉 **是否成功提交**：${{ env.VERIFY_SUCCESS }}
+            👤 **作者**：${{ env.LAST_COMMITTER }}
+            📅 **提交时间**：${{ env.RECENT_TIME }}  ${{ env.LATEST_TIME }}
+            ✉️ **提交信息**：_${{ env.LAST_MESSAGE }}_
+            🔗 **[查看提交](https://github.com/${{ github.repository }}/commit/${{ env.SHA }})**
 
           
 
