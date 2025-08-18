@@ -80,7 +80,7 @@ jobs:
           echo "SHA=$(git log -1 --format="%H")" >> $GITHUB_ENV
           
       - name: send2telegram
-        uses: Shawn-Summer/Telegram-sender-markdownV2-specific@v1
+        uses: Shawn-Summer/Telegram-sender-markdown@v1
         env:
           VERIFY_SUCCESS: ${{ needs.check_push.outputs.output1}}
         with:
