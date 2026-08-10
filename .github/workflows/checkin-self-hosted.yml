@@ -1,4 +1,4 @@
-name: Daily Bonus
+name: Daily Bonus (Self-hosted)
 
 on:
   schedule:
@@ -7,7 +7,8 @@ on:
 
 jobs:
   checkin:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    timeout-minutes: 10
 
     env:
       V2EX_COOKIES: ${{ secrets.V2EX_COOKIES }}
@@ -24,20 +25,23 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v7
+        run: |
+          rm -rf * .[!.]* 2>/dev/null
+          git init
+          git remote add origin https://github.com/${{ github.repository }}.git
+          git fetch --depth 1 origin ${{ github.sha }}
+          git checkout FETCH_HEAD
 
-      - name: Set timezone
-        run: sudo timedatectl set-timezone 'Asia/Shanghai'
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
 
-      - name: Echo current time
-        run: timedatectl
+      - name: Add uv to PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Install uv and Python 3.13
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          python-version: '3.13'
+      - name: Install Python 3.13
+        run: uv python install 3.13
 
-      - name: Install dependencies
+      - name: Sync dependencies
         run: uv sync
 
       - name: Install Playwright browsers
